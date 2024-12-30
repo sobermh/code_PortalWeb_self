@@ -1,0 +1,8 @@
+@use 'vuetify/settings' with (
+  $button-text-transform: none
+);
+
+$text-size-title: 1.25rem;
+
+$text-size-card-title: 1rem;
+$text-size-card-text: 0.75rem;
