@@ -92,13 +92,12 @@ onMounted(async () => {
     <VCard
       class="d-flex w-75 rounded-lg"
       color="#222"
-      max-height="60%"
-      min-height="60%"
+      height="60%"
       max-width="1400"
       min-width="860"
     >
       <VImg class="w-50" src="@/assets/bgimg.png" cover />
-      <VSheet class="w-50 text-center pa-9" color="transparent">
+      <VSheet class="w-50 text-center" color="transparent">
         <VContainer>
           <VRow>
             <VCol cols="12">
@@ -122,7 +121,6 @@ onMounted(async () => {
             <VCol cols="12">
               <VTextField
                 v-model="m_pwd"
-                class="mt-2"
                 placeholder="请输入密码"
                 :type="m_secret ? 'text' : 'password'"
                 :append-inner-icon="m_secret ? 'mdi-show' : 'mdi-hide'"
