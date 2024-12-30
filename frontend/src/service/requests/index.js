@@ -1,5 +1,6 @@
 import axios from 'axios'
-
+import router from '@/router'
+import appSonner from '@/utils/appSonner'
 class BaseRequest {
   constructor(config) {
     this.instance = axios.create(config)
@@ -12,12 +13,16 @@ class BaseRequest {
     this.instance.interceptors.response.use(
       (res) => res.data,
       (err) => {
-        console.error(err)
-        return {
-          code: err.response?.status || 500,
-          message: err.message || '未知错误',
+        if (err.response?.status === 403) {
+          router.push('/')
+          appSonner.error('登录已过期，请重新登录')
+        } else {
+          return {
+            code: err.response?.status || 500,
+            message: err.message || '未知错误',
+          }
         }
-      }
+      },
     )
 
     if (config.interceptors) {

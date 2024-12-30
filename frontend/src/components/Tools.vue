@@ -1,9 +1,6 @@
 <template>
   <div class="tools mx-10 my-5" position-relative>
     <div class="d-flex align-center justify-end">
-      <VBtn v-if="false" class="mr-5" prepend-icon="mdi-cog" @click="onShowConfig()">
-        <span>修改配置</span>
-      </VBtn>
       <VBtn class="" prepend-icon="mdi-email" @click="onShowHistoryFile()">
         <span>历史文件</span>
         <VBadge
@@ -19,9 +16,9 @@
       </VBtn>
     </div>
 
-    <div v-for="label in labels" :key="label" class="mb-10">
+    <div v-for="label in tools_labels" :key="label" class="mb-10">
       <div class="mb-4">
-        {{ labels_map[label] ?? label }}
+        {{ tools_labels_map[label] ?? label }}
       </div>
       <v-row>
         <v-col
@@ -104,75 +101,11 @@
         color="primary"
         rounded="lg"
         size="large"
-        @click="onUploadAndHandle()"
+        @click="onUploadAndHandleFile()"
       >
         <template #default> 处理文件 </template>
       </VBtn>
     </VSheet>
-  </VDialog>
-
-  <VDialog v-model="dialog_selectdir" width="70%" height="70%" persistent>
-    <VCard rounded="lg">
-      <VCardTitle class="d-flex justify-space-between align-center">
-        <div class="text-h5 text-medium-emphasis ps-2">选择处理文件夹</div>
-
-        <VBtn icon="mdi-close" variant="text" @click="dialog_selectdir = false" />
-      </VCardTitle>
-
-      <VDivider class="mb-10" />
-
-      <v-file-input
-        v-model="files"
-        label="选择文件夹"
-        multiple
-        show-size
-        class="ml-2 mr-4"
-        counter
-        width="400"
-        webkitdirectory
-        @change="onFilterSubFiles()"
-      >
-        <template #selection="{ fileNames }">
-          <template v-for="(file, index) in files" :key="file.name">
-            <v-chip v-if="index < 1" class="me-2" color="deep-purple-accent-1" size="medium" label>
-              {{ fileNames[0] }}
-            </v-chip>
-            <span v-else-if="index === 1" class="text-overline mx-2">
-              +{{ files.length - 1 }} File(s)
-            </span>
-          </template>
-        </template>
-      </v-file-input>
-
-      <!-- <VCard-subtitle class="d-flex justify-center">仅处理一级子文件</VCard-subtitle> -->
-
-      <!-- <VList lines="one">
-        <VList-subheader v-if="files.length > 0">{{
-          files[0].webkitRelativePath.split('/')[0]
-        }}</VList-subheader>
-
-        <VListItem v-for="file in files" :key="file.name" :title="file.name">
-          <template v-slot:append>
-            <VBtn icon @click="onRemoveDir(n)"> <VIcon>mdi-close</VIcon></VBtn>
-          </template>
-        </VListItem>
-      </VList> -->
-
-      <VCardActions class="my-2 d-flex justify-center">
-        <VBtn
-          prepend-icon="$loading"
-          color="primary"
-          rounded="lg"
-          variant="flat"
-          size="x-large"
-          elevation="24"
-          :loading="loading"
-          @click="onHandleAndDownload()"
-        >
-          <template #default> 处理并下载 </template>
-        </VBtn>
-      </VCardActions>
-    </VCard>
   </VDialog>
 
   <VDialog v-model="dialog_transfile" width="70%" height="70%" persistent>
@@ -289,148 +222,10 @@
       </VSheet>
     </VCard>
   </VDialog>
-
-  <VDialog v-model="dialog_setting" width="70%" height="70%" persistent>
-    <VCard>
-      <VCardTitle class="d-flex justify-space-between align-center" prepend-icon="mdi-cog">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          <VIcon class="pr-3"> mdi-cog </VIcon>服务配置
-        </div>
-        <VBtn icon="mdi-close" variant="text" @click="onCloseConfig()" />
-      </VCardTitle>
-      <v-form @submit.prevent="onSaveConfig()">
-        <VCard-text>
-          <v-row dense>
-            <v-col cols="12" sm="6" md="6" lg="6" xl="6">
-              <v-text-field
-                v-model="new_form_config.ip"
-                :rules="[form_config_rules.required, form_config_rules.ip]"
-                hint="请输入服务器Ip"
-                label="Ip*"
-                placeholder="127.0.0.1"
-                clearable
-                variant="outlined"
-              />
-            </v-col>
-
-            <v-col ols="12" sm="6" md="6" lg="6" xl="6">
-              <v-text-field
-                v-model="new_form_config.port"
-                hint="请输入服务器端口"
-                label="Port*"
-                placeholder="80"
-                required
-                :rules="[form_config_rules.port]"
-                clearable
-                variant="outlined"
-              />
-            </v-col>
-
-            <v-col cols="12" md="12" sm="12">
-              <v-text-field
-                v-model="new_form_config.tokenapi"
-                hint="请输入服务器TokenApi"
-                label="TokenApi*"
-                required
-                :rules="[form_config_rules.required]"
-                clearable
-                variant="outlined"
-              />
-            </v-col>
-
-            <v-col cols="12" md="12" sm="12">
-              <v-text-field
-                v-model="new_form_config.tokenenv"
-                hint="请输入服务器TokenEnv"
-                label="TokenEnv*"
-                :rules="[form_config_rules.required]"
-                clearable
-                variant="outlined"
-                :disabled="showTokenEnv()"
-              />
-            </v-col>
-          </v-row>
-
-          <small class="text-caption text-medium-emphasis">*必填选项</small>
-          <div>
-            <small class="text-caption text-medium-emphasis"
-              >修改设置只为临时设置,刷选页面即过期
-            </small>
-          </div>
-        </VCard-text>
-      </v-form>
-      <VDivider />
-
-      <VCard-actions>
-        <v-spacer />
-        <VBtn text="不保存" variant="plain" @click="onNoSaveConfig()" />
-        <VBtn color="primary" text="保存" variant="tonal" @click="onSaveConfig()" />
-      </VCard-actions>
-    </VCard>
-  </VDialog>
-
-  <VDialog v-model="dialog_json" width="70%" height="70%" persistent>
-    <VCard>
-      <VCardTitle class="d-flex justify-space-between align-center" prepend-icon="mdi-cog">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          <VIcon class="pr-3"> mdi-pencil </VIcon>JSON配置编辑
-        </div>
-        <VBtn icon="mdi-close" variant="text" @click="dialog_json = false" />
-      </VCardTitle>
-      <JsonEditor />
-
-      <VCardActions class="my-3 d-flex justify-center align-center">
-        <VBtn
-          color="primary"
-          rounded="lg"
-          variant="flat"
-          size="x-large"
-          elevation="24"
-          :loading="loading"
-          @click="onExecJson()"
-        >
-          <template #default> 运行 </template>
-        </VBtn>
-      </VCardActions>
-    </VCard>
-  </VDialog>
-
-  <VDialog v-model="dialog_execlogs" width="70%" height="70%" persistent>
-    <VCard>
-      <VCardTitle class="d-flex justify-space-between align-center" prepend-icon="mdi-cog">
-        <div class="text-h5 text-medium-emphasis ps-2">
-          <VIcon class="pr-3"> mdi-pencil </VIcon>执行日志
-        </div>
-        <VBtn icon="mdi-close" variant="text" @click="dialog_execlogs = false" />
-      </VCardTitle>
-      <v-table v-if="execlogs.length > 0">
-        <thead>
-          <tr>
-            <th class="text-left">server</th>
-            <th class="text-left">cmd</th>
-            <th class="text-left">msg</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in execlogs" :key="index">
-            <td>{{ item[0] }}</td>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-          </tr>
-        </tbody>
-      </v-table>
-      <VEmptyState
-        v-else
-        icon="mdi-magnify"
-        text="您未处理过任何数据,或处理数据已过期"
-        title="暂无任何数据"
-      />
-    </VCard>
-  </VDialog>
 </template>
 
 <script setup>
-import { onMounted, provide, ref, watch } from 'vue'
+import { onMounted, provide, ref } from 'vue'
 import JSZip from 'jszip'
 import { saveAs } from 'file-saver'
 import router from '@/router'
@@ -440,85 +235,43 @@ import * as apitools from '@/service/modules/tools'
 import { localCache } from '@/utils/cache'
 import { APP_TOKEN, CACHE_TOOLS_FILES } from '@/utils/constant'
 import appSoner from '@/utils/appSonner'
-import { pluginRequest } from '@/service'
 import { useToolsStore } from '@/stores'
-import JsonEditor from '@/components/JsonEditor.vue'
 import FileUpload from './FileUpload.vue'
 
 const toolsStore = useToolsStore()
-const tools = ref([])
-const files = ref([])
 
-const form_config_rules = ref({
-  required: (value) => !!value || '必填字段不能为空',
-  ip: (value) => {
-    const pattern =
-      /^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/
-    return pattern.test(value) || '不合法的IP地址'
-  },
-  port: (value) => {
-    const pattern = /^([0-9]{1,5})$/
-    const isValid = pattern.test(value) && parseInt(value, 10) <= 65525
-    return isValid || '不合法的端口号'
-  },
-})
-const json_data = ref({
-  hosts: ['192.168.10.121', '192.168.10.122'],
-  port: 16776,
-  cmds: [
-    'echo Hello, World!',
-    'ipconfig',
-    'reg add "HKCU\\Software\\TestKey1" /v TestValue /t REG_SZ /d "Hello, World!" /f',
-    "reg add 'HKLM\\Software\\TestKey1' /v TestValue /t REG_SZ /d 'Hello, World!' /f",
-    "powershell -c 'Get-ChildItem'",
-    "powershell -c '$PSVersionTable.PSVersion'",
-  ],
-  timeout: 5,
-  logfile: 'cmdexec.log',
-  decode: 'gbk',
-})
-const new_form_config = ref({ ip: '', port: '', tokenapi: '', tokenenv: '' })
-const form_config = ref({
-  ip: toolsStore.plugin_base_url.split('//')[1].split(':')[0],
-  port: toolsStore.plugin_base_url.split('//')[1].split(':')[1],
-  tokenapi: toolsStore.ai_token,
-  tokenenv: toolsStore.plugin_token,
-})
-const cur_tool = ref(null)
-const labels = ref([''])
-const labels_map = {
+const tools = ref([])
+
+const files = ref([])
+const tools_labels = ref([])
+const cur_tool = ref('')
+const select_filetype = ref('*')
+const cache_files_count = ref(0)
+const download_process = ref(0)
+
+const dialog_selectfile = ref(false)
+const dialog_transfile = ref(false)
+const loading_download_all = ref(false)
+
+const tools_labels_map = {
   other: '其他工具',
   image: '图片处理',
   audio: '音频转换',
   video: '视频转换',
 }
-const dialog_selectfile = ref(false)
-const select_file_type = ref('*')
-const select_file_type_map = {
+const select_filetype_map = {
   image: 'image/*',
   audio: 'audio/*',
   video: 'video/*',
 }
-const loading = ref(false)
-const dialog_transfile = ref(false)
-const dialog_selectdir = ref(false)
-const dialog_setting = ref(false)
-const dialog_json = ref(false)
-const cache_files_count = ref(0)
-const download_process = ref(0)
-const execlogs = ref([])
-const dialog_execlogs = ref(false)
 
-const loading_download_all = ref(false)
-
-provide('json_data', json_data)
-provide('select_file_type', select_file_type)
+provide('select_filetype', select_filetype)
 
 const getTools = async () => {
   const res = await apitools.apiGetTools()
   if (res.code === 200) {
     tools.value = res.data.filter((tool) => tool.publish === true)
-    labels.value = Array.from(
+    tools_labels.value = Array.from(
       new Set(tools.value.map((item) => item.label).filter((label) => label !== 'other')),
     )
   } else {
@@ -535,57 +288,6 @@ const getCacheFiles = () => {
   return cache_files
 }
 
-const onShowConfig = () => {
-  dialog_setting.value = true
-  new_form_config.value = { ...form_config.value }
-}
-
-const onCloseConfig = () => {
-  if (JSON.stringify(new_form_config.value) !== JSON.stringify(form_config.value)) {
-    appSoner.error('服务配置有变更，请确认是否保存')
-  } else {
-    dialog_setting.value = false
-  }
-}
-
-const onNoSaveConfig = () => {
-  dialog_setting.value = false
-}
-
-const onSaveConfig = async () => {
-  const rules = form_config_rules.value
-  if (
-    rules.ip(new_form_config.value.ip) !== true ||
-    rules.required(new_form_config.value.ip) !== true
-  ) {
-    appSoner.error('IP地址格式错误')
-    return
-  }
-  if (
-    rules.port(new_form_config.value.port) !== true ||
-    rules.required(new_form_config.value.ip) !== true
-  ) {
-    appSoner.error('端口号格式错误')
-    return
-  }
-
-  if (
-    rules.required(new_form_config.value.tokenapi) !== true ||
-    (await apitools.apiValidApiToken(new_form_config.value.tokenapi)).code !== 200
-  ) {
-    appSoner.error('TokenApi校验失败')
-    return
-  }
-
-  if (showTokenEnv() !== true && rules.required(new_form_config.value.tokenenv) !== true) {
-    appSoner.error('TokenEnv必须填写')
-    return
-  }
-  form_config.value = { ...new_form_config.value }
-  appSoner.success('保存成功')
-  dialog_setting.value = false
-}
-
 const onShowHistoryFile = () => {
   dialog_transfile.value = true
   files.value = getCacheFiles()
@@ -594,24 +296,14 @@ const onShowHistoryFile = () => {
 const onShowTool = (tool) => {
   const Tools = {
     Tool1: '#file',
-    Tool2: '#dir',
-    Tool3: '#json',
   }
   const desc_part = tool.desc.match(/#[a-zA-Z]+/)?.[0]
   switch (desc_part) {
     case Tools.Tool1:
       files.value = []
       dialog_selectfile.value = true
-      select_file_type.value = select_file_type_map[tool.label] || '*'
+      select_filetype.value = select_filetype_map[tool.label] || '*'
       cur_tool.value = tool
-      break
-    case Tools.Tool2:
-      files.value = []
-      dialog_selectdir.value = true
-      cur_tool.value = tool
-      break
-    case Tools.Tool3:
-      dialog_json.value = true
       break
     default:
       appSoner.warning('暂未开放在线处理')
@@ -652,7 +344,7 @@ const onDownloadTool = async (tool) => {
   }
 }
 
-const onUploadAndHandle = async () => {
+const onUploadAndHandleFile = async () => {
   dialog_transfile.value = files.value.length > 0 ? true : false
   dialog_selectfile.value = dialog_transfile.value ? false : dialog_selectfile.value
   loading_download_all.value = true
@@ -685,160 +377,9 @@ const onUploadAndHandle = async () => {
   }
 }
 
-const onRemoveFile = (file) => {
-  const index = files.value.findIndex((item) => item === file)
-  files.value.splice(index, 1)
-}
-
-const onFilterSubFiles = () => {
-  if (files.value.length > 0) {
-    files.value = Array.from(files.value).filter((file) => {
-      const relativePath = file.webkitRelativePath
-      const level = (relativePath.match(/\//g) || []).length
-      return level === 1
-    })
-  }
-  return files.value
-}
-
-const onHandleAndDownload = async () => {
-  const typeMapping = {
-    图片: { type: 'image', defaultExt: '.png' },
-    音频: { type: 'audio', defaultExt: '.mp3' },
-    视频: { type: 'video', defaultExt: '.mp4' },
-  }
-
-  const matchedKey = Object.keys(typeMapping).find((key) => cur_tool.value?.name.includes(key))
-
-  const filename = matchedKey ? typeMapping[matchedKey].type : 'default'
-  const default_ext = matchedKey ? typeMapping[matchedKey].defaultExt.toLowerCase() : ''
-
-  const zip = new JSZip()
-  const sortedFiles = files.value.sort((a, b) => a.lastModified - b.lastModified)
-  loading.value = true
-
-  try {
-    await Promise.all(
-      sortedFiles.map((file, index) => {
-        return new Promise((resolve, reject) => {
-          const newFileName = `${filename}_${(index + 1).toString().padStart(sortedFiles.length.toString().length, '0')}${default_ext}`
-
-          const fileReader = new FileReader()
-          fileReader.onload = (event) => {
-            try {
-              zip.file(newFileName, event.target.result)
-              resolve()
-            } catch (error) {
-              reject(error)
-            }
-          }
-          fileReader.onerror = () => reject(fileReader.error)
-          fileReader.readAsArrayBuffer(file)
-        })
-      }),
-    )
-    const content = await zip.generateAsync({ type: 'blob' })
-    const link = transBlob2Link(content, 'result.zip')
-    link.click()
-  } catch (error) {
-    appSoner.error(`处理文件失败: ${error}`)
-  }
-  loading.value = false
-}
-
-const onExecJson = async () => {
-  const pingServer = async (host, port) => {
-    const url = `http://${host}:${port}`
-    const timeout = 5000
-
-    const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('无法连接到服务器，超时')), timeout),
-    )
-
-    try {
-      const res = await Promise.race([fetch(url, { method: 'GET' }), timeoutPromise])
-      if (res && res.status === 200) {
-        return [true, null]
-      } else {
-        return [false, '无法连接到服务器']
-      }
-    } catch (e) {
-      if (e instanceof Error) {
-        return [false, `无法连接到服务器，错误信息：${e.message}`]
-      }
-      return [false, '未知错误']
-    }
-  }
-
-  const execCmd = async (hosts, port, cmds, timeout, decode) => {
-    for (const host of hosts) {
-      const [f, msg] = await pingServer(host, port)
-      if (!f) {
-        execlogs.value.push([host.toString() + ':' + port.toString(), 'ping', msg])
-        return false
-      }
-
-      for (const cmd of cmds) {
-        try {
-          const params = { cmd: cmd, timeout: timeout, decode: decode }
-          const res = await fetch(`http://${host}:${port}/api/exec_cmds`, {
-            method: 'POST',
-            body: JSON.stringify(params),
-            headers: { 'Content-Type': 'application/json' },
-          })
-          if (res.status === 200) {
-            const res_json = await res.json()
-            if (res_json.data.error !== '') {
-              execlogs.value.push([
-                host.toString() + ':' + port.toString(),
-                cmd,
-                `error: ${res_json.data.error}`,
-              ])
-              return false
-            } else {
-              execlogs.value.push([host, cmd, res_json.data.output])
-            }
-          } else {
-            execlogs.value.push([
-              host.toString() + ':' + port.toString(),
-              cmd,
-              `error: ${await res.text()}`,
-            ])
-            return false
-          }
-        } catch (e) {
-          execlogs.value.push([host.toString() + ':' + port.toString(), cmd, e])
-          return false
-        }
-      }
-    }
-    return true
-  }
-
-  const main = async () => {
-    const hosts = json_data.value.hosts
-    const cmds = json_data.value.cmds
-    const timeout = json_data.value.timeout
-    const port = json_data.value.port
-    const decode = json_data.value.decode
-    loading.value = true
-    const flag = await execCmd(hosts, port, cmds, timeout, decode)
-    loading.value = false
-    if (flag) {
-      appSoner.success('执行成功')
-    } else {
-      appSoner.error('执行失败')
-    }
-    dialog_execlogs.value = true
-  }
-  main()
-}
-
 const onGetFiles = (value) => {
   files.value = value
 }
-
-const showTokenEnv = () => new_form_config.value.ip === '127.0.0.1'
 
 const filterTools = (label) => {
   return tools.value.filter((tool) => tool.label === label)
@@ -869,8 +410,8 @@ const handleFile = async (file) => {
   if (res.code === 200) {
     file.status = 'success'
     file.remote_tar_path = res.data
-    file.plugin_serve_ip = form_config.value?.ip
-    file.plugin_serve_port = form_config.value?.port
+    file.plugin_serve_ip = toolsStore.plugin_base_url.split('//')[1].split(':')[0]
+    file.plugin_serve_port = toolsStore.plugin_base_url.split('//')[1].split(':')[1]
     file.handle_timestamp = Date.now()
     file.tool_name = cur_tool.value?.name
     files.value = [...files.value]
@@ -957,8 +498,8 @@ const setFile2Cache = (file) => {
     name: file.name,
     size: file.size,
     remote_tar_path: file.remote_tar_path,
-    plugin_serve_ip: form_config.value?.ip,
-    plugin_serve_port: form_config.value?.port,
+    plugin_serve_ip: toolsStore.plugin_base_url.split('//')[1].split(':')[0],
+    plugin_serve_port: toolsStore.plugin_base_url.split('//')[1].split(':')[1],
     status: file.status,
     handle_timestamp: Date.now(),
     type: file.type,
@@ -988,29 +529,11 @@ const transBlob2Link = (blob, filename) => {
 }
 
 const goToIndex = () => {
-  localStorage.removeItem('app-token')
+  localStorage.removeItem(APP_TOKEN)
   router.push({ path: '/' })
 }
 
-watch(
-  form_config,
-  (newConfig, oldConfig) => {
-    if (newConfig.ip !== oldConfig.ip || newConfig.port !== oldConfig.port) {
-      toolsStore.plugin_base_url = 'https://' + newConfig.ip + ':' + newConfig.port
-      pluginRequest.setBaseURL(toolsStore.plugin_base_url)
-    }
-    if (newConfig.tokenapi !== oldConfig.tokenapi) {
-      toolsStore.ai_token = newConfig.tokenapi
-    }
-    if (newConfig.tokenenv !== oldConfig.tokenenv) {
-      toolsStore.plugin_token = newConfig.tokenenv
-    }
-  },
-  { deep: true },
-)
-
 onMounted(() => {
-  // setToken()
   getTools()
   getCacheFiles()
 })

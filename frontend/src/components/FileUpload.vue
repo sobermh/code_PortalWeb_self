@@ -7,17 +7,17 @@
       multiple
       show-size
       clearable
-      :accept="select_file_type"
+      :accept="select_filetype"
       density="comfortable"
     >
-      <template v-slot:item="{ props: itemProps }">
+      <template #item="{ props: itemProps }">
         <VFileUploadItem v-bind="itemProps" lines="one" nav>
-          <template v-slot:prepend>
-            <VAvatar size="48" rounded></VAvatar>
+          <template #prepend>
+            <VAvatar size="48" rounded />
           </template>
 
-          <template v-slot:clear="{ props: clearProps }">
-            <VBtn color="primary" v-bind="clearProps"></VBtn>
+          <template #clear="{ props: clearProps }">
+            <VBtn color="primary" v-bind="clearProps" />
           </template>
         </VFileUploadItem>
       </template>
@@ -29,7 +29,7 @@
 import { inject, watch } from 'vue'
 
 const emit = defineEmits(['getFiles'])
-const select_file_type = inject('select_file_type')
+const select_filetype = inject('select_filetype')
 
 const files = ref(null)
 

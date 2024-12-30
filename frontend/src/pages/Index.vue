@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import Cookies from 'js-cookie'
 import router from '@/router'
 import { aiRequest } from '@/service'
@@ -31,10 +32,11 @@ const on_login = async () => {
       device: navigator.userAgent,
     }
     const rdata = await aiRequest.post({
-      url: '/login', data: {
+      url: '/login',
+      data: {
         args: param,
-        func: 'post_kmoke_login'
-      }
+        func: 'post_kmoke_login',
+      },
     })
     if (rdata.message == 'role vaild error') {
       appSonner.error('缺少访问权限')
@@ -65,10 +67,11 @@ onMounted(async () => {
       device: navigator.userAgent,
     }
     const rdata = await aiRequest.post({
-      url: '/login', data: {
+      url: '/login',
+      data: {
         args: param,
-        func: 'post_cookie_login'
-      }
+        func: 'post_cookie_login',
+      },
     })
     if (rdata.message == 'role vaild error') {
       appSonner.error('缺少访问权限')
@@ -86,8 +89,14 @@ onMounted(async () => {
 
 <template>
   <div class="d-flex align-center justify-center bg-main">
-    <VCard class="d-flex w-75 rounded-lg" color="#222" max-height="60%" min-height="60%" max-width="1400"
-      min-width="860">
+    <VCard
+      class="d-flex w-75 rounded-lg"
+      color="#222"
+      max-height="60%"
+      min-height="60%"
+      max-width="1400"
+      min-width="860"
+    >
       <VImg class="w-50" src="@/assets/bgimg.png" cover />
       <VSheet class="w-50 text-center pa-9" color="transparent">
         <VContainer>
@@ -101,13 +110,27 @@ onMounted(async () => {
             </VCol>
 
             <VCol cols="12">
-              <VTextField v-model="m_name" placeholder="请输入账号" type="email" persistent-placeholder variant="outlined" />
+              <VTextField
+                v-model="m_name"
+                placeholder="请输入账号"
+                type="email"
+                persistent-placeholder
+                variant="outlined"
+              />
             </VCol>
 
             <VCol cols="12">
-              <VTextField class="mt-2" v-model="m_pwd" placeholder="请输入密码" :type="m_secret ? 'text' : 'password'"
-                :append-inner-icon="m_secret ? 'mdi-show' : 'mdi-hide'" persistent-placeholder
-                @click:append-inner="m_secret = !m_secret" @keyup.enter="on_login" variant="outlined" />
+              <VTextField
+                v-model="m_pwd"
+                class="mt-2"
+                placeholder="请输入密码"
+                :type="m_secret ? 'text' : 'password'"
+                :append-inner-icon="m_secret ? 'mdi-show' : 'mdi-hide'"
+                persistent-placeholder
+                variant="outlined"
+                @click:append-inner="m_secret = !m_secret"
+                @keyup.enter="on_login"
+              />
             </VCol>
 
             <VCol cols="12">
@@ -119,7 +142,7 @@ onMounted(async () => {
             </VCol>
 
             <VCol cols="12">
-              <VBtn :loading="m_loading" block size="x-large" @click="on_login" color="primary">
+              <VBtn :loading="m_loading" block size="x-large" color="primary" @click="on_login">
                 登录
               </VBtn>
             </VCol>

@@ -10,7 +10,11 @@ class Cache {
 
   setCache(key, value) {
     if (value) {
-      this.storage.setItem(key, JSON.stringify(value))
+      if (typeof value === 'string') {
+        this.storage.setItem(key, value)
+      } else {
+        this.storage.setItem(key, JSON.stringify(value))
+      }
     }
   }
 
@@ -19,7 +23,7 @@ class Cache {
     if (value) {
       try {
         return JSON.parse(value)
-      } catch (e) {
+      } catch {
         return value
       }
     }

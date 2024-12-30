@@ -16,12 +16,11 @@ export default [
   ...pluginVue.configs['flat/recommended'],
 
   {
-    extends: ['plugin:prettier/recommended'],
-
     rules: {
       'vue/multi-word-component-names': 'off',
       'vue/max-attributes-per-line': 'off',
       'vue/attribute-hyphenation': 'off',
+      'vue/singleline-html-element-content-newline': 'off',
     },
   },
 ]

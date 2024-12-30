@@ -1,5 +1,6 @@
 import { aiRequest, pluginRequest, aiDownloadRequest } from '@/service'
-import { useToolsStore } from '@/stores'
+import { localCache } from '@/utils/cache'
+import { APP_TOKEN } from '@/utils/constant'
 
 export const apiValidApiToken = (token) => {
   return aiDownloadRequest.post({
@@ -11,7 +12,7 @@ export const apiValidApiToken = (token) => {
 export const apiGetTools = () => {
   return aiRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'info_data',
       func: 'post_guess_all',
@@ -27,7 +28,7 @@ export const apiGetTools = () => {
 export const apiGetDownloadUrl = (url) => {
   return aiDownloadRequest.post({
     url: '/file/drive/download_pike',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       url,
     },
@@ -52,7 +53,7 @@ export const apiDownloadTool = (url, onProgress) => {
 export const apiUploadBinary = (content, filename) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'file_upload',
       func: 'post_upload_binary',
@@ -67,7 +68,7 @@ export const apiUploadBinary = (content, filename) => {
 export const apiDownloadBinary = (filename) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'file_upload',
       func: 'post_down_binary',
@@ -81,7 +82,7 @@ export const apiDownloadBinary = (filename) => {
 export const apiTransi2i = (inpath, ext) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'aigc_image',
       func: 'post_trans_i2i',
@@ -96,7 +97,7 @@ export const apiTransi2i = (inpath, ext) => {
 export const apiTransv2v = (inpath, ext) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'aigc_video',
       func: 'post_trans_v2v',
@@ -111,7 +112,7 @@ export const apiTransv2v = (inpath, ext) => {
 export const apiTransa2a = (inpath, ext) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'aigc_audio',
       func: 'post_trans_a2a',
@@ -126,7 +127,7 @@ export const apiTransa2a = (inpath, ext) => {
 export const apiRemoveBgi = (inpath) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'aigc_image',
       func: 'post_remove_bg',
@@ -140,7 +141,7 @@ export const apiRemoveBgi = (inpath) => {
 export const apiRemoveFgi = (inpath) => {
   return pluginRequest.post({
     url: '/execute',
-    headers: { 'api-key': localStorage.getItem('app-token') },
+    headers: { 'api-key': localCache.getCache(APP_TOKEN) },
     data: {
       name: 'aigc_image',
       func: 'post_remove_fg',
