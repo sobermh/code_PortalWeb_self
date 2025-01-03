@@ -9,4 +9,5 @@ application/.env
 
 # customer
 log/
+migrations/
 .env*
