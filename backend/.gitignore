@@ -8,6 +8,6 @@ application/.env
 
 
 # customer
-log/
+logs/
 migrations/
 .env*
