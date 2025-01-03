@@ -1,0 +1,12 @@
+# vscode
+__pycache__
+
+
+# pycharm
+.idea
+application/.env
+
+
+# customer
+log/
+.env*

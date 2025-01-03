@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "backend"
+version = "0.1.0"
+description = ""
+authors = ["sobermh <14384402+sobermh@user.noreply.gitee.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.6"
+uvicorn = "^0.34.0"
+python-dotenv = "^1.0.1"
+aerich = "^0.8.1"
+
+[tool.poetry.dependencies.tortoise-orm]
+extras = ["aiomysql"]
+version = "^0.23.0"
+
+[tool.aerich]
+tortoise_orm = "application.settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
