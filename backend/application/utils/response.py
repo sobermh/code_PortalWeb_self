@@ -1,7 +1,7 @@
 from fastapi import status
 
 
-def base_response(code, msg, data=None):
+def base_response(code, msg, data):
     """
     基础返回格式
     :param code: 状态码
@@ -9,17 +9,15 @@ def base_response(code, msg, data=None):
     :param data: 返回数据
     :return:
     """
-    if data is None:
-        data = []
     result = {
         "code": code,
-        "message": msg,
+        "msg": msg,
         "data": data
     }
     return result
 
 
-def success_response(data=None, msg=''):
+def success_response(data, msg='success'):
     """
     成功返回格式
     :param data: 返回数据
@@ -29,7 +27,7 @@ def success_response(data=None, msg=''):
     return base_response(200, msg, data)
 
 
-def fail_response(data, code=status.HTTP_400_BAD_REQUEST, msg='fail'):
+def fail_response(msg, code=status.HTTP_400_BAD_REQUEST, data=None):
     """
     失败返回格式
     :param code: 状态码

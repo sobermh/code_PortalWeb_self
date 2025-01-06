@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 
 from .scheams import *
 from . import models
-from ...utils.response import fail_response
+from ...utils.response import fail_response, success_response
 
 app = APIRouter()
 
@@ -11,21 +11,23 @@ app = APIRouter()
 async def register(user_info: UserRegisterReq):
     """
     用户注册
-    :param user_info:
+    :param user_info: 用户信息
     :return:
     """
     user = await models.User.filter(username=user_info.username).first()
     if user:
         return fail_response('当前账号已存在！')
+    # wechat_user = wechat_tools.get_wechat_info(user_info.code)
+
     user = await models.User.create(
         **dict(user_info),
         # username=user_info.mobile,
         # avatar=user_info.avatarUrl,
     )
-
-    return {
+    data = {
         'username': user.username,
     }
+    return success_response(data)
 
 
 @app.post('/login', response_model=UserLoginReq, summary="用户登录")

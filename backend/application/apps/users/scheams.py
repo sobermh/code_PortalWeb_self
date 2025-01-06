@@ -1,8 +1,9 @@
 import re
 from typing import Any, Optional
 
-from pydantic import BaseModel, field_validator, Field, EmailStr
+from pydantic import BaseModel, field_validator, Field, EmailStr, model_validator
 
+from application.apps.users.utils import Hashing
 from application.schemas import BaseResp
 
 
@@ -21,6 +22,13 @@ class UserRegisterReq(BaseModel):
             raise ValueError('非法邮箱格式')
         return v
 
+    @model_validator(mode='after')
+    def model_validator(self):
+        hashing = Hashing()
+        self.password = hashing.hash(self.password)
+
+        return self
+
 
 class UserLoginReq(BaseModel):
     username: str = Field(..., description='用户名', min_length=4, max_length=20)
@@ -32,7 +40,7 @@ class UserRegister(BaseModel):
 
 
 class UserRegisterResp(BaseResp):
-    data: UserRegister = Field(..., description='用户信息')
+    data: Optional[UserRegister] = Field(..., description='用户信息')
 
 
 class UserLogin(BaseModel):
@@ -40,4 +48,4 @@ class UserLogin(BaseModel):
 
 
 class UserLoginOutResp(BaseModel):
-    data: UserLogin = Field(..., description='用户信息')
+    data: Optional[UserLogin] = Field(..., description='用户信息')

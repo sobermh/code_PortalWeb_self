@@ -18,11 +18,11 @@ def create_app() -> FastAPI:
         summary=os.environ.get('APP_SUMMARY'),
         description=os.environ.get('APP_DESCRIPTION'),
         version=os.environ.get('APP_VERSION'),
-        # 注册全局异常处理函数
-        exception_handlers={
-            exceptions.HTTPException: exceptions.global_http_exception_handler,
-            exceptions.RequestValidationError: exceptions.global_request_exception_handler,
-        }
+        # # 注册全局异常处理函数
+        # exception_handlers={
+        #     exceptions.HTTPException: exceptions.global_http_exception_handler,
+        #     exceptions.RequestValidationError: exceptions.global_request_exception_handler,
+        # }
     )
 
     # 把Tortoise-orm注册到App应用对象中
@@ -40,6 +40,5 @@ def create_app() -> FastAPI:
     # 注册中间件函数
     http_middleware = app.middleware('http')
     http_middleware(middleware.log_requests)
-    http_middleware(middleware.response_request)
 
     return app
