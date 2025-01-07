@@ -1,22 +1,37 @@
 from fastapi import APIRouter, HTTPException, status
+from starlette.requests import Request
 
 from .scheams import *
 from . import models
+from .utils import JWTTool
 from ...utils.response import fail_response, success_response
 
 app = APIRouter()
 
 
-@app.post('/register', response_model=UserRegisterResp, summary="用户注册")
-async def register(user_info: UserRegisterReq):
+@app.post('/register', summary="用户注册", response_model=UserRegisterResp)
+async def register(request: Request, user_info: UserRegisterReq) -> dict:
     """
     用户注册
+    :param request:请求对象
     :param user_info: 用户信息
     :return:
     """
+    sms_key = f'sms_{user_info.mobile}'
     user = await models.User.filter(username=user_info.username).first()
     if user:
         return fail_response('当前账号已存在！')
+    user = await models.User.filter(mobile=sms_key).first()
+    if user:
+        return fail_response('当前手机号已注册！')
+
+    redis = request.app.state.redis
+    redis_sms = await redis.get(f'sms_{user_info.mobile}')
+    if redis_sms is None:
+        return fail_response('验证码不存在或已过期！')
+    if redis_sms != user_info.sms_code:
+        return fail_response('验证码不正确！')
+
     # wechat_user = wechat_tools.get_wechat_info(user_info.code)
 
     user = await models.User.create(
@@ -26,12 +41,14 @@ async def register(user_info: UserRegisterReq):
     )
     data = {
         'username': user.username,
+        'token': JWTTool().create_token({'id': user.id, 'username': user.username})
     }
+    await redis.delete(sms_key)
     return success_response(data)
 
 
 @app.post('/login', response_model=UserLoginReq, summary="用户登录")
-async def login(user_info: UserLoginOutResp):
+async def login(user_info: UserLoginOutResp) -> dict:
     """用户登录"""
     # # 0. 判断验证码是否正确
     # redis = request.app.state.redis

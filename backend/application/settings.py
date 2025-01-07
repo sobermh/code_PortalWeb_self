@@ -35,11 +35,36 @@ TORTOISE_ORM = {
     'timezone': os.environ.get('APP_TIMEZONE', 'Asia/Shanghai')
 }
 
-SMS = {
-    'length': os.environ.get('SMS_CODE_LENGTH')
+REDIS = {
+    'host': os.environ.get('RD_HOST'),  # 数据库地址
+    'port': os.environ.get('RD_PORT'),  # 数据库端口
+    'db': os.environ.get('RD_DB'),  # 数据库名
+    'username': os.environ.get('RD_USERNAME'),  # 用户名
+    'password': os.environ.get('RD_PASSWORD'),  # 密码
 }
 
+SMS = {
+    'length': os.environ.get('SMS_CODE_LENGTH'),
+    "expire": os.environ.get('SMS_CODE_EXPIRE')
+}
+ALIYUN = {
+    'key': os.environ.get('ALIYUN_KEY_ID'),
+    'secret': os.environ.get('ALIYUN_KEY_SECRET'),
+    'sms': {
+        'sign_name': os.environ.get('ALIYUN_VERIFY_SMS_SIGN_NAME'),
+        'template_code': os.environ.get('ALIYUN_VERIFY_TEMPLATE_CODE'),
+    }
+}
 WECHAT = {
     'app_id': os.environ.get('WECHAT_APP_ID'),
     'app_secret': os.environ.get('WECHAT_APP_SECRET'),
+}
+
+JWT = {
+    # 秘钥[盐值]
+    'secret_key': os.environ.get('APP_SECRET'),
+    # 设定JWT令牌签名算法
+    'algorithm': "HS256",
+    # 设置令牌过期时间变量（单位：秒）
+    'expire_time': 30 * 60
 }

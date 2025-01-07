@@ -14,7 +14,7 @@ class User(BaseModel):
     id = fields.IntField(description='主键', pk=True)
     username = fields.CharField(description='账号', max_length=255, unique=True)
     password = fields.CharField(description='密码', max_length=255)
-    mobile = fields.CharField(description='手机', max_length=16, index=True, unique=True, null=True)
+    mobile = fields.CharField(description='手机', max_length=16, index=True, unique=True)
     email = fields.CharField(description='邮箱', max_length=255, index=True, unique=True, null=True)
 
     openid = fields.CharField(description='微信OpenID', max_length=255, unique=True, null=True)

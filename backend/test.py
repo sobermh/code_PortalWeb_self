@@ -1,6 +1,13 @@
-import os
+import secrets
+import string
 
-from dotenv import load_dotenv
 
-load_dotenv()
-print(os.environ.get("DB_PORT"))
+def generate_random_key(length):
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    key = ''.join(secrets.choice(alphabet) for i in range(length))
+    return key
+
+
+# 生成一个符合要求的随机密钥
+key = generate_random_key(50)
+print(key)

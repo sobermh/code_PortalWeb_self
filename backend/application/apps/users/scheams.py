@@ -10,16 +10,26 @@ from application.schemas import BaseResp
 class UserRegisterReq(BaseModel):
     username: str = Field(..., description="用户名", min_length=4, max_length=20)
     password: str = Field(..., description="密码", min_length=6, max_length=20)
-    mobile: Optional[str] = Field(None, description="手机号")
+    mobile: str = Field(..., description="手机号")
+    sms_code: str = Field(..., description="短信验证码")
     email: Optional[str] = Field(None, description="邮箱")
 
     @field_validator('email')
     def validate_email(cls, v):
         if not v:
             return v
-        email_regex = r"^(?![.-])[A-Za-z0-9._%+-]+(?:[A-Za-z0-9._%+-])*(?<=@)[A-Za-z0-9.-]+(?<=\.[A-Za-z]{2,})$"
+        email_regex = r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
         if not re.match(email_regex, v):
             raise ValueError('非法邮箱格式')
+        return v
+
+    @field_validator('mobile')
+    def validate_mobile(cls, v):
+        if not v:
+            return v
+        mobile_regex = r"^1[3-9]\d{9}$"
+        if not re.match(mobile_regex, v):
+            raise ValueError('非法手机号格式')
         return v
 
     @model_validator(mode='after')

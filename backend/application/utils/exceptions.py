@@ -32,9 +32,9 @@ def global_request_exception_handler(request: Request, exc):
     :param exc: 本次发生的异常对象
     :return:
     """
-
+    print(exc.errors(), 1111)
     return JSONResponse({
-        'code': status.HTTP_400_BAD_REQUEST,
-        'err_msg': exc.errors()[0],
-        'status': 'Failed'
+        'code': status.HTTP_422_UNPROCESSABLE_ENTITY,
+        'msg': exc.errors()[0].get("msg"),
+        'data': ''
     })

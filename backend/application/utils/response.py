@@ -17,22 +17,23 @@ def base_response(code, msg, data):
     return result
 
 
-def success_response(data, msg='success'):
+def success_response(data, msg='success', code=status.HTTP_200_OK):
     """
     成功返回格式
     :param data: 返回数据
     :param msg: 提示信息
+    :param code: 状态码
     :return:
     """
-    return base_response(200, msg, data)
+    return base_response(code, msg, data)
 
 
-def fail_response(msg, code=status.HTTP_400_BAD_REQUEST, data=None):
+def fail_response(msg, data=None, code=status.HTTP_400_BAD_REQUEST):
     """
     失败返回格式
-    :param code: 状态码
     :param msg: 提示信息
     :param data: 返回数据
+    :param code: 状态码
     :return:
     """
     return base_response(code, msg, data)
