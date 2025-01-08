@@ -1,5 +1,6 @@
-from redis import asyncio as aioredis
 from fastapi import FastAPI
+
+from redis import asyncio as aioredis
 
 
 def register_redis(app: FastAPI, config: dict):

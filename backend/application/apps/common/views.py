@@ -1,6 +1,5 @@
 import os
-from fastapi import APIRouter, HTTPException
-from starlette import status
+from fastapi import APIRouter
 from starlette.requests import Request
 
 from application import settings

@@ -1,7 +1,5 @@
-import json
-import os, time
-
-from fastapi.responses import JSONResponse
+import os
+import time
 
 from application.utils.logs import get_logger
 
@@ -17,4 +15,3 @@ async def log_requests(request, call_next):
     formatted_process_time = '{0:.2f}'.format(process_time)
     logger.info(f"path={request.url.path} timer={formatted_process_time}ms status_code={response.status_code}")
     return response
-

@@ -2,11 +2,12 @@ import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
+from fastapi.exceptions import HTTPException, RequestValidationError
 
 from . import settings, middleware
 from .apps.common.views import app as common_app
 from .apps.users.views import app as users_app
-from .utils import exceptions, redis_tool
+from .utils import exception_tool, redis_tool
 
 
 def create_app() -> FastAPI:
@@ -20,8 +21,8 @@ def create_app() -> FastAPI:
         version=os.environ.get('APP_VERSION'),
         # 注册全局异常处理函数
         exception_handlers={
-            exceptions.HTTPException: exceptions.global_http_exception_handler,
-            exceptions.RequestValidationError: exceptions.global_request_exception_handler,
+            HTTPException: exception_tool.global_http_exception_handler,
+            RequestValidationError: exception_tool.global_request_exception_handler,
         }
     )
 

@@ -1,14 +1,13 @@
 import re
-from typing import Any, Optional
-
-from pydantic import BaseModel, field_validator, Field, EmailStr, model_validator
+from typing import Optional
+from pydantic import BaseModel, field_validator, Field, model_validator
 
 from application.apps.users.utils import Hashing
 from application.schemas import BaseResp
 
 
 class UserRegisterReq(BaseModel):
-    username: str = Field(..., description="用户名", min_length=4, max_length=20)
+    username: str = Field(..., description="用户名", min_length=2, max_length=20)
     password: str = Field(..., description="密码", min_length=6, max_length=20)
     mobile: str = Field(..., description="手机号")
     sms_code: str = Field(..., description="短信验证码")
@@ -41,8 +40,10 @@ class UserRegisterReq(BaseModel):
 
 
 class UserLoginReq(BaseModel):
-    username: str = Field(..., description='用户名', min_length=4, max_length=20)
+    username: str = Field(..., description='用户名', min_length=2, max_length=20)
     password: str = Field(..., description="密码", min_length=6, max_length=20)
+    sms_code: str = Field(None, description="短信验证码")
+    mobile: str = Field(None, description="手机号")
 
 
 class UserRegister(BaseModel):
@@ -54,8 +55,10 @@ class UserRegisterResp(BaseResp):
 
 
 class UserLogin(BaseModel):
-    username: str = Field(..., description='用户名', min_length=4, max_length=20)
+    id: int = Field(..., description='用户id')
+    username: str = Field(..., description='用户名', min_length=2, max_length=20)
+    token: str = Field(..., description='token')
 
 
-class UserLoginOutResp(BaseModel):
+class UserLoginResp(BaseResp):
     data: Optional[UserLogin] = Field(..., description='用户信息')
