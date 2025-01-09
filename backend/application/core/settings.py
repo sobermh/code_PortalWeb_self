@@ -1,8 +1,14 @@
 import os
-
+import sys
 from dotenv import load_dotenv
 
-load_dotenv()
+if "--dev" in sys.argv:
+    os.environ["ENV"] = "development"
+    load_dotenv(".env.development")
+else:
+    os.environ["ENV"] = "production"
+    load_dotenv(".env.production")
+load_dotenv(".env")
 
 # tortoise-orm数据库配置
 TORTOISE_ORM = {

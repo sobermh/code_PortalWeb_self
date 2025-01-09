@@ -4,7 +4,7 @@ from datetime import timedelta, datetime
 from typing import Optional
 from passlib.context import CryptContext
 
-from application import settings
+from application.core import settings
 
 
 class Hashing(object):
@@ -99,4 +99,3 @@ if __name__ == '__main__':
     #     print(ret)
     #     ret = hashing.verify("123456", password_hash2)
     #     print(ret)
-

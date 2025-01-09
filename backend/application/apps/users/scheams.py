@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import BaseModel, field_validator, Field, model_validator
 
 from application.apps.users.utils import Hashing
-from application.schemas import BaseResp
+from application.core.schemas import BaseResp
 
 
 class UserRegisterReq(BaseModel):

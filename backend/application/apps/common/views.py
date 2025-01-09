@@ -2,8 +2,8 @@ import os
 from fastapi import APIRouter
 from starlette.requests import Request
 
-from application import settings
-from application.schemas import BaseResp
+from application.core import settings
+from application.core.schemas import BaseResp
 from application.utils import comm_tool, aliyunclound, logs
 from application.utils.response import fail_response, success_response
 

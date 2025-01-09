@@ -1,10 +1,9 @@
 import os
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from tortoise.contrib.fastapi import register_tortoise
 from fastapi.exceptions import HTTPException, RequestValidationError
 
-from . import settings, middleware
+from .core import middleware, settings
 from .apps.common.views import app as common_app
 from .apps.users.views import app as users_app
 from .utils import exception_tool, redis_tool
@@ -12,7 +11,6 @@ from .utils import exception_tool, redis_tool
 
 def create_app() -> FastAPI:
     """创建web应用对象"""
-    load_dotenv()
 
     app = FastAPI(
         title=os.environ.get('APP_NAME'),

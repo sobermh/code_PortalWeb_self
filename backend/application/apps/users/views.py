@@ -1,11 +1,11 @@
 from starlette.requests import Request
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 from tortoise.expressions import Q
 
 from .scheams import *
 from . import models
 from .utils import JWTTool
-from ... import settings
+from ...core import settings
 from ...utils.response import fail_response, success_response
 
 app = APIRouter()
@@ -62,11 +62,11 @@ async def login(request: Request, user_info: UserLoginReq) -> dict:
     sms_key = f'sms_{user_info.mobile}'
     redis = request.app.state.redis
 
-    # sms_code = await redis.get(sms_key)
-    # if not sms_code:
-    #     return fail_response('验证码不存在或已过期！')
-    # if sms_code != user_info.sms_code:
-    #     return fail_response('验证码不正确！')
+    sms_code = await redis.get(sms_key)
+    if not sms_code:
+        return fail_response('验证码不存在或已过期！')
+    if sms_code != user_info.sms_code:
+        return fail_response('验证码不正确！')
 
     # # 1. 基于code请求微信服务器获取用户的OpenID以及将来调用用户信息的session_key
     # result = wechat_tools.get_wechat_info(user_info.code)
