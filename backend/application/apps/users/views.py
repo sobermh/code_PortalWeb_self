@@ -8,10 +8,10 @@ from .utils import JWTTool
 from ...core import settings
 from ...utils.response import fail_response, success_response
 
-app = APIRouter()
+router = APIRouter()
 
 
-@app.post('/register', summary="用户注册", response_model=UserRegisterResp)
+@router.post('/register', summary="用户注册", response_model=UserRegisterResp)
 async def register(request: Request, user_info: UserRegisterReq) -> dict:
     """
     用户注册
@@ -50,7 +50,7 @@ async def register(request: Request, user_info: UserRegisterReq) -> dict:
     return success_response(data)
 
 
-@app.post('/login', summary="用户登录", response_model=UserLoginResp)
+@router.post('/login', summary="用户登录", response_model=UserLoginResp)
 async def login(request: Request, user_info: UserLoginReq) -> dict:
     """
     用户登录

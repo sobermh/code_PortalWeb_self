@@ -5,8 +5,9 @@ from fastapi.exceptions import HTTPException, RequestValidationError
 
 from .core import middleware, settings
 from .apps.common.views import app as common_app
-from .apps.users.views import app as users_app
-from .utils import exception_tool, redis_tool
+from .apps.users.views import router as users_router
+from .database import redis
+from .utils import exception_tool
 
 
 def create_app() -> FastAPI:
@@ -33,17 +34,18 @@ def create_app() -> FastAPI:
     )
 
     # redis连接对象注册到App应用对象中
-    redis_tool.register_redis(
+    redis.register_redis(
         app,
         config=settings.REDIS,
     )
 
     # 注册各个应用分组下的路由信息，合并到App应用对象
     app.include_router(common_app, prefix='')
-    app.include_router(users_app, prefix='/users')
+    app.include_router(users_router, prefix='/users')
 
     # 注册中间件函数
     http_middleware = app.middleware('http')
     http_middleware(middleware.log_requests)
 
     return app
+
